@@ -1,4 +1,4 @@
-package main
+package godfrey
 
 import (
 	"net/http"
@@ -22,6 +22,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var err error
 
 			if os.Getenv("mode") == "prod" {
 				gin.SetMode(gin.ReleaseMode)
@@ -37,7 +38,7 @@ to quickly create a Cobra application.`,
 				})
 			})
 			if err != nil {
-				return
+				return err
 			}
 
 			r.Run(":8080")

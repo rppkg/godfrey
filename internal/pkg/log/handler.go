@@ -55,6 +55,7 @@ func (h *GodfreyHandler) Handle(ctx context.Context, r slog.Record) error {
 		return err
 	}
 
+	// FIXME: repeated output log
 	timeStr := r.Time.Format("[15:05:05.000]")
 	msg := color.CyanString(r.Message)
 	h.l.Println(timeStr, level, msg, color.WhiteString(string(b)))

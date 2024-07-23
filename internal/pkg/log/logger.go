@@ -94,3 +94,13 @@ func (l *Logger) Error(msg string, args ...interface{}) {
 func (l *Logger) ErrorContext(ctx context.Context, msg string, args ...any) {
 	l.logger.ErrorContext(ctx, msg, args...)
 }
+
+func (l *Logger) Fatal(msg string, args ...interface{}) {
+	l.logger.Error(msg, args...)
+	os.Exit(1)
+}
+
+func (l *Logger) FatalContext(ctx context.Context, msg string, args ...any) {
+	l.logger.ErrorContext(ctx, msg, args...)
+	os.Exit(1)
+}

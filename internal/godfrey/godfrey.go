@@ -47,7 +47,7 @@ to quickly create a Cobra application.`,
 			go func() {
 				if err := sv.ListenAndServe(); err != nil {
 					if !errors.Is(err, http.ErrServerClosed) {
-						panic(err)
+						log.L().Fatal("Server listen", slog.Any("error", err))
 					}
 				}
 			}()
@@ -55,6 +55,8 @@ to quickly create a Cobra application.`,
 			sig := make(chan os.Signal, 1)
 			signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 			<-sig
+
+			log.L().Info("Shutting down server ...")
 
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()

@@ -1,10 +1,19 @@
 package godfrey
 
 import (
+	"context"
+	"errors"
+	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rppkg/godfrey/internal/pkg/log"
+	"github.com/rppkg/godfrey/internal/pkg/middleware"
+
 	"github.com/spf13/cobra"
 )
 
@@ -22,26 +31,38 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var err error
-
-			if os.Getenv("mode") == "prod" {
+			if os.Getenv("GODFREY_GF_SERVE_GIN_MODE") == "prod" {
 				gin.SetMode(gin.ReleaseMode)
 			}
 
-			r := gin.New()
-			r.RedirectTrailingSlash = false
-			r.Use(gin.Recovery())
+			g := gin.New()
+			g.Use(gin.Recovery(), middleware.SlogInPrint())
 
-			r.GET("/ping", func(c *gin.Context) {
-				c.JSON(http.StatusOK, gin.H{
-					"message": "ok",
-				})
+			g.GET("/pong", func(c *gin.Context) {
+				c.String(http.StatusOK, "pong")
 			})
-			if err != nil {
+
+			sv := &http.Server{Addr: os.Getenv("GODFREY_GF_SERVE_GIN_ADDR"), Handler: g}
+
+			go func() {
+				if err := sv.ListenAndServe(); err != nil {
+					if !errors.Is(err, http.ErrServerClosed) {
+						panic(err)
+					}
+				}
+			}()
+
+			sig := make(chan os.Signal, 1)
+			signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+			<-sig
+
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			if err := sv.Shutdown(ctx); err != nil {
+				log.L().Error("Server forced to shutdown", slog.Any("error", err))
 				return err
 			}
-
-			r.Run(":8080")
 
 			return nil
 		},

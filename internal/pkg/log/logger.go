@@ -54,13 +54,13 @@ func (l *Logger) AppendCtx(parent context.Context, attr slog.Attr) context.Conte
 	if parent == nil {
 		parent = context.Background()
 	}
-	if v, ok := parent.Value(godgreyFields).([]slog.Attr); ok {
+	if v, ok := parent.Value(godfreyFields).([]slog.Attr); ok {
 		v = append(v, attr)
-		return context.WithValue(parent, godgreyFields, v)
+		return context.WithValue(parent, godfreyFields, v)
 	}
 	var v []slog.Attr
 	v = append(v, attr)
-	return context.WithValue(parent, godgreyFields, v)
+	return context.WithValue(parent, godfreyFields, v)
 }
 
 func (l *Logger) Debug(msg string, args ...any) {

@@ -16,19 +16,18 @@ var (
 	once sync.Once
 )
 
-func L() *Logger {
+func init() {
 	if ins != nil {
-		return ins
+		return
 	}
-
 	once.Do(initLogger)
+}
 
+func L() *Logger {
 	return ins
 }
 
 func RowL() *slog.Logger {
-	L()
-
 	return ins.logger
 }
 
@@ -63,44 +62,44 @@ func (l *Logger) AppendCtx(parent context.Context, attr slog.Attr) context.Conte
 	return context.WithValue(parent, godfreyFields, v)
 }
 
-func (l *Logger) Debug(msg string, args ...any) {
-	l.logger.Debug(msg, args...)
+func Debug(msg string, args ...any) {
+	ins.logger.Debug(msg, args...)
 }
 
-func (l *Logger) DebugContext(ctx context.Context, msg string, args ...any) {
-	l.logger.DebugContext(ctx, msg, args...)
+func DebugContext(ctx context.Context, msg string, args ...any) {
+	ins.logger.DebugContext(ctx, msg, args...)
 }
 
-func (l *Logger) Info(msg string, args ...any) {
-	l.logger.Info(msg, args...)
+func Info(msg string, args ...any) {
+	ins.logger.Info(msg, args...)
 }
 
-func (l *Logger) InfoContext(ctx context.Context, msg string, args ...any) {
-	l.logger.InfoContext(ctx, msg, args...)
+func InfoContext(ctx context.Context, msg string, args ...any) {
+	ins.logger.InfoContext(ctx, msg, args...)
 }
 
-func (l *Logger) Warn(msg string, args ...interface{}) {
-	l.logger.Warn(msg, args...)
+func Warn(msg string, args ...interface{}) {
+	ins.logger.Warn(msg, args...)
 }
 
-func (l *Logger) WarnContext(ctx context.Context, msg string, args ...any) {
-	l.logger.WarnContext(ctx, msg, args...)
+func WarnContext(ctx context.Context, msg string, args ...any) {
+	ins.logger.WarnContext(ctx, msg, args...)
 }
 
-func (l *Logger) Error(msg string, args ...interface{}) {
-	l.logger.Error(msg, args...)
+func Error(msg string, args ...interface{}) {
+	ins.logger.Error(msg, args...)
 }
 
-func (l *Logger) ErrorContext(ctx context.Context, msg string, args ...any) {
-	l.logger.ErrorContext(ctx, msg, args...)
+func ErrorContext(ctx context.Context, msg string, args ...any) {
+	ins.logger.ErrorContext(ctx, msg, args...)
 }
 
-func (l *Logger) Fatal(msg string, args ...interface{}) {
-	l.logger.Error(msg, args...)
+func Fatal(msg string, args ...interface{}) {
+	ins.logger.Error(msg, args...)
 	os.Exit(1)
 }
 
-func (l *Logger) FatalContext(ctx context.Context, msg string, args ...any) {
-	l.logger.ErrorContext(ctx, msg, args...)
+func FatalContext(ctx context.Context, msg string, args ...any) {
+	ins.logger.ErrorContext(ctx, msg, args...)
 	os.Exit(1)
 }

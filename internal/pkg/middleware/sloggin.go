@@ -2,14 +2,15 @@ package middleware
 
 import (
 	"log/slog"
-	"os"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rppkg/godfrey/internal/pkg/log"
 	sloggin "github.com/samber/slog-gin"
 )
 
 func SlogInPrint() gin.HandlerFunc {
-	return sloggin.NewWithConfig(slog.New(slog.NewJSONHandler(os.Stdout, nil)), sloggin.Config{
+	return sloggin.NewWithConfig(log.RowL(), sloggin.Config{
 		DefaultLevel:     slog.LevelInfo,
 		ClientErrorLevel: slog.LevelWarn,
 		ServerErrorLevel: slog.LevelError,
@@ -24,15 +25,9 @@ func SlogInPrint() gin.HandlerFunc {
 
 		WithSpanID:  true,
 		WithTraceID: true,
-	})
-}
 
-func SlogInFilter() gin.HandlerFunc {
-	return sloggin.NewWithFilters(
-		slog.New(slog.NewJSONHandler(os.Stdout, nil)),
-		sloggin.Accept(func(c *gin.Context) bool {
-			return true
-		}),
-		sloggin.IgnoreStatus(401, 404),
-	)
+		Filters: []sloggin.Filter{
+			sloggin.IgnoreStatus(http.StatusUnauthorized, http.StatusNotFound, http.StatusOK),
+		},
+	})
 }

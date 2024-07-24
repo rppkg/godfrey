@@ -2,18 +2,15 @@ package log
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 	"log"
 	"log/slog"
-
-	"github.com/fatih/color"
 )
 
 type ctxKey string
 
 const (
-	godgreyFields ctxKey = "godfrey_fields"
+	godfreyFields ctxKey = "godfrey_fields"
 )
 
 type GodfreyHandlerOptions struct {
@@ -26,19 +23,7 @@ type GodfreyHandler struct {
 }
 
 func (h *GodfreyHandler) Handle(ctx context.Context, r slog.Record) error {
-	level := r.Level.String() + ":"
-	switch r.Level {
-	case slog.LevelDebug:
-		level = color.MagentaString(level)
-	case slog.LevelInfo:
-		level = color.BlueString(level)
-	case slog.LevelWarn:
-		level = color.YellowString(level)
-	case slog.LevelError:
-		level = color.RedString(level)
-	}
-
-	if attrs, ok := ctx.Value(godgreyFields).([]slog.Attr); ok {
+	if attrs, ok := ctx.Value(godfreyFields).([]slog.Attr); ok {
 		for _, v := range attrs {
 			r.AddAttrs(v)
 		}
@@ -50,20 +35,10 @@ func (h *GodfreyHandler) Handle(ctx context.Context, r slog.Record) error {
 		return true
 	})
 
-	b, err := json.MarshalIndent(fields, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	// FIXME: repeated output log
-	timeStr := r.Time.Format("[15:05:05.000]")
-	msg := color.CyanString(r.Message)
-	h.l.Println(timeStr, level, msg, color.WhiteString(string(b)))
-
 	return h.Handler.Handle(ctx, r)
 }
 
-func NewPrettyHandler(out io.Writer, opts GodfreyHandlerOptions) *GodfreyHandler {
+func NewGodfreyHandler(out io.Writer, opts GodfreyHandlerOptions) *GodfreyHandler {
 	h := &GodfreyHandler{
 		Handler: slog.NewJSONHandler(out, &opts.SlogOpts),
 		l:       log.New(out, "", 0),

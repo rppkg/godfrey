@@ -35,12 +35,12 @@ func RowL() *slog.Logger {
 func initLogger() {
 	opts := GodfreyHandlerOptions{
 		SlogOpts: slog.HandlerOptions{
-			Level:       slog.LevelDebug,
+			Level:       slog.LevelInfo,
 			ReplaceAttr: replaceAttr,
 		},
 	}
 
-	h := NewPrettyHandler(os.Stdout, opts)
+	h := NewGodfreyHandler(os.Stdout, opts)
 	logger := slog.New(h)
 
 	l := &Logger{
@@ -58,7 +58,7 @@ func (l *Logger) AppendCtx(parent context.Context, attr slog.Attr) context.Conte
 		v = append(v, attr)
 		return context.WithValue(parent, godgreyFields, v)
 	}
-	v := []slog.Attr{}
+	var v []slog.Attr
 	v = append(v, attr)
 	return context.WithValue(parent, godgreyFields, v)
 }

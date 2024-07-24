@@ -20,6 +20,7 @@ func replaceAttr(_ []string, a slog.Attr) slog.Attr {
 		case error:
 			a.Value = fmtErr(v)
 		}
+	default:
 	}
 	return a
 }

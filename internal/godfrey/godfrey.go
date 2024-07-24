@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rppkg/godfrey/internal/pkg/log"
 	"github.com/rppkg/godfrey/internal/pkg/middleware"
-
+	"github.com/rppkg/godfrey/pkg/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func Command() *cobra.Command {
@@ -31,8 +31,12 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if os.Getenv("GODFREY_GF_SERVE_GIN_MODE") == "prod" {
+			if viper.GetString("GF_SERVE_GIN_MODE") == "prod" {
 				gin.SetMode(gin.ReleaseMode)
+			}
+
+			if err := initDal(); err != nil {
+				return err
 			}
 
 			g := gin.New()
@@ -42,7 +46,7 @@ to quickly create a Cobra application.`,
 				c.String(http.StatusOK, "pong")
 			})
 
-			sv := &http.Server{Addr: os.Getenv("GODFREY_GF_SERVE_GIN_ADDR"), Handler: g}
+			sv := &http.Server{Addr: viper.GetString("GF_SERVE_GIN_ADDR"), Handler: g}
 
 			go func() {
 				if err := sv.ListenAndServe(); err != nil {
@@ -69,6 +73,9 @@ to quickly create a Cobra application.`,
 			return nil
 		},
 	}
+
+	cobra.OnInitialize(initConfig)
+	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	return cmd
 }

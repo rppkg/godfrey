@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rppkg/godfrey/internal/pkg/log"
+	"github.com/rppkg/godfrey/pkg/log"
 	sloggin "github.com/samber/slog-gin"
 )
 

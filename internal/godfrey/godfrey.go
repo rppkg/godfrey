@@ -42,9 +42,9 @@ to quickly create a Cobra application.`,
 			g := gin.New()
 			g.Use(gin.Recovery(), middleware.SlogInPrint())
 
-			g.GET("/pong", func(c *gin.Context) {
-				c.String(http.StatusOK, "pong")
-			})
+			if err := initRouters(g); err != nil {
+				return err
+			}
 
 			sv := &http.Server{Addr: viper.GetString("GF_SERVE_GIN_ADDR"), Handler: g}
 

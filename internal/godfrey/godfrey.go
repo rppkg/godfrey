@@ -11,17 +11,20 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rppkg/godfrey/internal/pkg/middleware"
 	"github.com/rppkg/godfrey/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/rppkg/godfrey/internal/pkg/middleware"
 )
 
-func Command() *cobra.Command {
-	cmd := &cobra.Command{
-		Use: "serve",
+var cfg string
 
-		Short: "GF serve command CLI.",
+func App() *cobra.Command {
+	cmd := &cobra.Command{
+		Use: "godfrey",
+
+		Short: "The gf is root CLI for godfrey.",
 
 		Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -75,7 +78,8 @@ to quickly create a Cobra application.`,
 	}
 
 	cobra.OnInitialize(initConfig)
-	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	cmd.PersistentFlags().StringVarP(&cfg, "config", "c", "",
+		"The path to the godfrey configuration file. Empty string for no configuration file.")
 
 	return cmd
 }

@@ -7,12 +7,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	HomeConfigPathDir = ".godfrey"
-	DefaultConfigName = "godfrey.yaml"
-)
-
 func initConfig() {
+	if cfg != "" {
+		viper.SetConfigFile(cfg)
+	}
+
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("GODFREY")
 

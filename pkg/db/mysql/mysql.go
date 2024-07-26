@@ -1,14 +1,10 @@
 package mysql
 
 import (
-	"database/sql"
-	"errors"
 	"fmt"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	migratemysql "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -24,7 +20,6 @@ type Options struct {
 	MaxOpenConnections    int
 	MaxConnectionLifeTime time.Duration
 	LogLevel              int
-	MigrationPath         string
 }
 
 func (o *Options) DSN() string {
@@ -59,33 +54,4 @@ func InitDB(opts *Options) (*gorm.DB, error) {
 	sqlDB.SetMaxIdleConns(opts.MaxIdleConnections)
 
 	return db, nil
-}
-
-func Migrate(opts *Options) error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?multiStatements=true",
-		opts.Username, opts.Password, opts.Host, opts.Database,
-	)
-
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return err
-	}
-	driver, err := migratemysql.WithInstance(db, &migratemysql.Config{})
-	if err != nil {
-		return err
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		opts.MigrationPath,
-		opts.Database,
-		driver,
-	)
-	if err != nil {
-		return err
-	}
-
-	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		return err
-	}
-
-	return nil
 }

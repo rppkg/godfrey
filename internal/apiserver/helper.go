@@ -4,8 +4,10 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+	"gorm.io/gen"
 
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
+	"github.com/rppkg/godfrey/internal/pkg/models"
 	"github.com/rppkg/godfrey/pkg/db/mysql"
 )
 
@@ -33,19 +35,32 @@ func initDal() error {
 		MaxOpenConnections:    viper.GetInt("APISERVER_DB_MAX_OPEN_CONN"),
 		MaxConnectionLifeTime: viper.GetDuration("APISERVER_DB_MAX_CONN_LIFE_TIME"),
 		LogLevel:              viper.GetInt("APISERVER_DB_LOG_LEVEL"),
-		MigrationPath:         viper.GetString("APISERVER_DB_MIGRATION_PATH"),
 	}
 
-	err := mysql.Migrate(dbOptions)
+	gormDB, err := mysql.InitDB(dbOptions)
 	if err != nil {
 		return err
 	}
 
-	gdb, err := mysql.InitDB(dbOptions)
+	err = gormDB.AutoMigrate(
+		&models.User{},
+		&models.Role{},
+	)
 	if err != nil {
 		return err
 	}
-	dal.InitDB(gdb)
+
+	gormGen := gen.NewGenerator(gen.Config{
+		OutPath: "internal/apiserver/dal/query",
+		Mode:    gen.WithDefaultQuery,
+	})
+	gormGen.ApplyBasic(
+		models.User{},
+		models.Role{},
+	)
+	gormGen.Execute()
+
+	dal.InitDB(gormDB)
 
 	return nil
 }

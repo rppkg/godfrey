@@ -5,6 +5,8 @@ all: gen format lint test build
 
 .PHONY: gen
 gen:
+	@rm -rf ./internal/apiserver/dal/query
+	@go run ./cmd/godfrey-gencode/gencode.go
 
 .PHONY: format
 format:

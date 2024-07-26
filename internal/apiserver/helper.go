@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
-	"gorm.io/gen"
 
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
 	"github.com/rppkg/godfrey/internal/pkg/models"
@@ -49,16 +48,6 @@ func initDal() error {
 	if err != nil {
 		return err
 	}
-
-	gormGen := gen.NewGenerator(gen.Config{
-		OutPath: "internal/apiserver/dal/query",
-		Mode:    gen.WithDefaultQuery,
-	})
-	gormGen.ApplyBasic(
-		models.User{},
-		models.Role{},
-	)
-	gormGen.Execute()
 
 	dal.InitDB(gormDB)
 

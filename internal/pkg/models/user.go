@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/rs/xid"
 	"gorm.io/gorm"
 )
 
@@ -24,6 +25,10 @@ type User struct {
 	Role *Role `gorm:"foreignKey:RoleID;references:ID"`
 }
 
-func (*User) TableName() string {
+func (u *User) TableName() string {
 	return "users"
+}
+
+func (u *User) BeforeCreate() {
+	u.ID = xid.New().String()
 }

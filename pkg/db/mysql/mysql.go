@@ -11,6 +11,10 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+const (
+	DefaultCreateBatchSize = 10000
+)
+
 type Options struct {
 	Host                  string
 	Username              string
@@ -38,7 +42,8 @@ func InitDB(opts *Options) (*gorm.DB, error) {
 		logLevel = logger.LogLevel(opts.LogLevel)
 	}
 	db, err := gorm.Open(mysql.Open(opts.DSN()), &gorm.Config{
-		Logger: logger.Default.LogMode(logLevel),
+		CreateBatchSize: DefaultCreateBatchSize,
+		Logger:          logger.Default.LogMode(logLevel),
 	})
 	if err != nil {
 		return nil, err

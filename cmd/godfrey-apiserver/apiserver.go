@@ -6,11 +6,12 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	_ "go.uber.org/automaxprocs"
 
-	"github.com/rppkg/godfrey/internal/godfrey"
+	"github.com/rppkg/godfrey/internal/apiserver"
 )
 
 func main() {
-	if err := godfrey.App().Execute(); err != nil {
+	app := apiserver.App()
+	if err := app.Execute(); err != nil {
 		os.Exit(2)
 	}
 }

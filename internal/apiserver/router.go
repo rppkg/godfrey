@@ -1,4 +1,4 @@
-package godfrey
+package apiserver
 
 import (
 	"net/http"
@@ -6,20 +6,17 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 
-	"github.com/rppkg/godfrey/internal/godfrey/controller/v1/user"
-	"github.com/rppkg/godfrey/pkg/log"
+	"github.com/rppkg/godfrey/internal/apiserver/controller/v1/user"
 )
 
 func initRouters(g *gin.Engine) error {
 	pprof.Register(g)
 
 	g.GET("/healthz", func(c *gin.Context) {
-		log.Info("Healthz function called")
-
 		c.JSON(http.StatusOK, "ok")
 	})
 
-	userCtrl := user.NewUserController()
+	userCtrl := user.NewController()
 
 	api := g.Group("/api")
 	{
@@ -27,10 +24,10 @@ func initRouters(g *gin.Engine) error {
 		{
 			userv1 := v1.Group("/users")
 			userv1.POST("", userCtrl.Create)
-			userv1.PUT(":id", userCtrl.Update)
-			userv1.GET(":id", userCtrl.Get)
+			userv1.PUT(":username", userCtrl.Update)
+			userv1.GET(":username", userCtrl.Get)
 			userv1.GET("", userCtrl.List)
-			userv1.DELETE(":id", userCtrl.Delete)
+			userv1.DELETE(":username", userCtrl.Delete)
 		}
 	}
 

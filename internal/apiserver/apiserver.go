@@ -1,4 +1,4 @@
-package godfrey
+package apiserver
 
 import (
 	"context"
@@ -11,20 +11,18 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rppkg/godfrey/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/rppkg/godfrey/internal/pkg/middleware"
+	"github.com/rppkg/godfrey/pkg/log"
 )
-
-var cfg string
 
 func App() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "godfrey",
+		Use: "apiserver",
 
-		Short: "The gf is root CLI for godfrey.",
+		Short: "The apiserver is apiserver service CLI for godfrey.",
 
 		Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -34,23 +32,23 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if viper.GetString("GF_SERVE_GIN_MODE") == "prod" {
+			if viper.GetString("APISERVER_GIN_MODE") == "prod" {
 				gin.SetMode(gin.ReleaseMode)
 			}
 
 			if err := initDal(); err != nil {
+				log.Error("Init dal", slog.Any("error", err))
 				return err
 			}
 
 			g := gin.New()
 			g.Use(gin.Recovery(), middleware.SlogInPrint())
-
 			if err := initRouters(g); err != nil {
+				log.Error("Init routers", slog.Any("error", err))
 				return err
 			}
 
-			sv := &http.Server{Addr: viper.GetString("GF_SERVE_GIN_ADDR"), Handler: g}
-
+			sv := &http.Server{Addr: viper.GetString("APISERVER_GIN_ADDR"), Handler: g}
 			go func() {
 				if err := sv.ListenAndServe(); err != nil {
 					if !errors.Is(err, http.ErrServerClosed) {
@@ -64,10 +62,8 @@ to quickly create a Cobra application.`,
 			<-sig
 
 			log.Info("Shutting down server ...")
-
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
-
 			if err := sv.Shutdown(ctx); err != nil {
 				log.Error("Server forced to shutdown", slog.Any("error", err))
 				return err

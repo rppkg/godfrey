@@ -4,6 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *UserController) List(c *gin.Context) {
+func (controller *Controller) Update(c *gin.Context) {
 
 }

@@ -4,6 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *UserController) Get(c *gin.Context) {
+func (controller *Controller) Get(c *gin.Context) {
 
 }

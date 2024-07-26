@@ -4,14 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
 	migratemysql "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/rppkg/godfrey/pkg/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,6 +24,7 @@ type Options struct {
 	MaxOpenConnections    int
 	MaxConnectionLifeTime time.Duration
 	LogLevel              int
+	MigrationPath         string
 }
 
 func (o *Options) DSN() string {
@@ -67,19 +66,25 @@ func Migrate(opts *Options) error {
 		opts.Username, opts.Password, opts.Host, opts.Database,
 	)
 
-	log.Info("dsn", "msg", dsn)
-
-	db, _ := sql.Open("mysql", dsn)
-	driver, _ := migratemysql.WithInstance(db, &migratemysql.Config{})
-	m, _ := migrate.NewWithDatabaseInstance(
-		"file://./migrations",
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return err
+	}
+	driver, err := migratemysql.WithInstance(db, &migratemysql.Config{})
+	if err != nil {
+		return err
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		opts.MigrationPath,
 		opts.Database,
 		driver,
 	)
+	if err != nil {
+		return err
+	}
 
-	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Error("migrate up failed", slog.Any("error", err))
-		return fmt.Errorf("migration failed: %w", err)
+	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return err
 	}
 
 	return nil

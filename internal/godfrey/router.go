@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
+
 	"github.com/rppkg/godfrey/internal/godfrey/controller/v1/user"
 	"github.com/rppkg/godfrey/pkg/log"
 )

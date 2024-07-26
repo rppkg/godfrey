@@ -1,12 +1,11 @@
-package db
+package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
-
-	"gorm.io/gorm"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
@@ -14,10 +13,11 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/rppkg/godfrey/pkg/log"
 	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-type MySQLOptions struct {
+type Options struct {
 	Host                  string
 	Username              string
 	Password              string
@@ -28,7 +28,7 @@ type MySQLOptions struct {
 	LogLevel              int
 }
 
-func (o *MySQLOptions) DSN() string {
+func (o *Options) DSN() string {
 	return fmt.Sprintf(`%s:%s@tcp(%s)/%s?charset=utf8&parseTime=%t&loc=%s`,
 		o.Username,
 		o.Password,
@@ -38,7 +38,7 @@ func (o *MySQLOptions) DSN() string {
 		"Local")
 }
 
-func NewMySQL(opts *MySQLOptions) (*gorm.DB, error) {
+func InitDB(opts *Options) (*gorm.DB, error) {
 	logLevel := logger.Silent
 	if opts.LogLevel != 0 {
 		logLevel = logger.LogLevel(opts.LogLevel)
@@ -62,7 +62,7 @@ func NewMySQL(opts *MySQLOptions) (*gorm.DB, error) {
 	return db, nil
 }
 
-func Migrate(opts *MySQLOptions) error {
+func Migrate(opts *Options) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?multiStatements=true",
 		opts.Username, opts.Password, opts.Host, opts.Database,
 	)
@@ -77,7 +77,7 @@ func Migrate(opts *MySQLOptions) error {
 		driver,
 	)
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Error("migrate up failed", slog.Any("error", err))
 		return fmt.Errorf("migration failed: %w", err)
 	}

@@ -3,8 +3,10 @@ package godfrey
 import (
 	"strings"
 
-	"github.com/rppkg/godfrey/pkg/db"
 	"github.com/spf13/viper"
+
+	"github.com/rppkg/godfrey/internal/godfrey/dal"
+	"github.com/rppkg/godfrey/pkg/db/mysql"
 )
 
 func initConfig() {
@@ -20,7 +22,7 @@ func initConfig() {
 }
 
 func initDal() error {
-	dbOptions := &db.MySQLOptions{
+	dbOptions := &mysql.Options{
 		Host:                  viper.GetString("GF_SERVE_MYSQL_HOST"),
 		Username:              viper.GetString("GF_SERVE_MYSQL_USERNAME"),
 		Password:              viper.GetString("GF_SERVE_MYSQL_PASSWORD"),
@@ -31,17 +33,16 @@ func initDal() error {
 		LogLevel:              viper.GetInt("GF_SERVE_MYSQL_GORM_LOG_LEVEL"),
 	}
 
-	err := db.Migrate(dbOptions)
+	err := mysql.Migrate(dbOptions)
 	if err != nil {
 		return err
 	}
 
-	// ins, err := db.NewMySQL(dbOptions)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// store.Init(ins)
+	gdb, err := mysql.InitDB(dbOptions)
+	if err != nil {
+		return err
+	}
+	dal.InitDB(gdb)
 
 	return nil
 }

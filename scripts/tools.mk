@@ -8,9 +8,9 @@ tools.install: $(addprefix tools.install., $(TOOLS))
 
 .PHONY: tools.install.%
 tools.install.%:
-	$(LOG_INFO) "Starting installation of $*..."
+	@$(LOG_INFO) "Starting installation of $*..."
 	@$(MAKE) install.$*
-	$(LOG_INFO) "Installation of $* completed successfully."
+	@$(LOG_INFO) "Installation of $* completed successfully."
 
 .PHONY: tools.verify.%
 tools.verify.%:

@@ -10,4 +10,7 @@ ROOT_PACKAGE=github.com/rppkg/godfrey
 OUTPUT_DIR := $(ROOT_DIR)/_output
 
 FIND := find . ! -path './third_party/*' ! -path './vendor/*'
-XARGS := gxargs --no-run-if-empty
+XARGS := xargs --no-run-if-empty
+
+## 默认情况下，makefile使用/bin/sh作为shell
+SHELL := /bin/bash

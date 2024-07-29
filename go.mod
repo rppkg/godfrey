@@ -6,12 +6,12 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/joho/godotenv v1.5.1
-	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	go.uber.org/automaxprocs v1.5.3
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gen v0.3.26
 	gorm.io/gorm v1.25.11
+	gorm.io/plugin/dbresolver v1.5.0
 )
 
 require (
@@ -40,7 +40,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gorm.io/datatypes v1.1.1-0.20230130040222-c43177d3cf8c // indirect
 	gorm.io/hints v1.1.0 // indirect
-	gorm.io/plugin/dbresolver v1.5.0 // indirect
 )
 
 require (

@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := all
 
+MAKEFLAGS += --no-print-directory
+
 .PHONY: all
 all: gen tidy format lint test build
 

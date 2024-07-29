@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 
+	"github.com/rs/xid"
+
 	"gorm.io/gorm"
 )
 
@@ -20,4 +22,10 @@ type Role struct {
 
 func (*Role) TableName() string {
 	return "roles"
+}
+
+func (u *Role) BeforeCreate(tx *gorm.DB) (err error) {
+	u.ID = xid.New().String()
+
+	return
 }

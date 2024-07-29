@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // Importing the MySQL driver to register it with the database/sql package
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -19,6 +19,7 @@ func replaceAttr(_ []string, a slog.Attr) slog.Attr {
 		switch v := a.Value.Any().(type) {
 		case error:
 			a.Value = fmtErr(v)
+		default:
 		}
 	default:
 	}

@@ -41,7 +41,8 @@ func initDal() error {
 		return err
 	}
 
-	err = gormDB.AutoMigrate(
+	// NOTE: maybe it's better to use atlas
+	err = gormDB.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		&models.User{},
 		&models.Role{},
 	)

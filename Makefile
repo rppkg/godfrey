@@ -1,21 +1,33 @@
 .DEFAULT_GOAL := all
 
 .PHONY: all
-all: gen format lint test build
+all: gen tidy format lint test build
+
+include scripts/comm.mk
+include scripts/tools.mk
+include scripts/gen.mk
+include scripts/golang.mk
 
 .PHONY: gen
 gen:
-	@rm -rf ./internal/apiserver/dal/query
-	@go run ./cmd/godfrey-gencode/gencode.go
+	@$(MAKE) gen.query
+
+.PHONY: tidy
+tidy:
+	@$(MAKE) go.tidy
 
 .PHONY: format
 format:
+	@$(MAKE) go.fmt
 
 .PHONY: lint
 lint:
+	@$(MAKE) go.lint
 
 .PHONY: test
 test:
+	@$(MAKE) go.test
 
 .PHONY: build
 build:
+	@$(MAKE) go.build

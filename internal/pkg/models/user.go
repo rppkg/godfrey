@@ -29,6 +29,8 @@ func (u *User) TableName() string {
 	return "users"
 }
 
-func (u *User) BeforeCreate() {
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = xid.New().String()
+
+	return
 }

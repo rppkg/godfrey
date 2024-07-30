@@ -20,6 +20,16 @@ go.tidy:
 
 .PHONY: go.test
 go.test:
+	@mkdir -p $(OUTPUT_DIR)
+	@set -o pipefail; \
+		go test -race -cover -coverprofile=$(OUTPUT_DIR)/coverage.out -timeout=10m -shuffle=on -short -v $(shell go list ./...) || exit 1
+	@if [ "$(shell uname)" = "Darwin" ]; then \
+		sed -i '' '/mock_.*.go/d' $(OUTPUT_DIR)/coverage.out; \
+		sed -i '' '/internal\/apiserver\/dal\/.*.go/d' $(OUTPUT_DIR)/coverage.out; \
+	else \
+		sed -i '/mock_.*.go/d' $(OUTPUT_DIR)/coverage.out; \
+		sed -i '/internal\/apiserver\/dal\/.*.go/d' $(OUTPUT_DIR)/coverage.out; \
+	fi
 
 COMMANDS ?= $(filter-out %.md, $(wildcard $(ROOT_DIR)/cmd/*))
 BINS ?= $(foreach cmd,${COMMANDS},$(notdir $(cmd)))
@@ -45,4 +55,4 @@ go.build.%:
 	$(eval OS := $(word 1,$(subst _, ,$(PLATFORM))))
 	$(eval ARCH := $(word 2,$(subst _, ,$(PLATFORM))))
 	@mkdir -p $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)
-	CGO_ENABLED=0 GOOS=$(OS) GOARCH=$(ARCH) go build $(GO_BUILD_FLAGS) -o $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)/$(COMMAND)$(GO_OUT_EXT) $(ROOT_PACKAGE)/cmd/$(COMMAND)
+	@CGO_ENABLED=0 GOOS=$(OS) GOARCH=$(ARCH) go build $(GO_BUILD_FLAGS) -o $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)/$(COMMAND)$(GO_OUT_EXT) $(ROOT_PACKAGE)/cmd/$(COMMAND)

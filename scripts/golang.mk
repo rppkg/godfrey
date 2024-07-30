@@ -6,8 +6,8 @@ endif
 
 .PHONY: go.fmt
 go.fmt: tools.verify.gofumpt tools.verify.goimports
-	@$(FIND) -type f -name '*.go' | $(XARGS) gofumpt -w
-	@$(FIND) -type f -name '*.go' | $(XARGS) goimports -w -local $(ROOT_PACKAGE)
+	@$(FIND) -type f -name '*.go' -exec gofumpt -w {} +
+	@$(FIND) -type f -name '*.go' -exec goimports -w -local github.com/rppkg/godfrey {} +
 	@go mod edit -fmt
 
 .PHONY: go.lint
@@ -44,6 +44,5 @@ go.build.%:
 	$(eval PLATFORM := $(word 1,$(subst ., ,$*)))
 	$(eval OS := $(word 1,$(subst _, ,$(PLATFORM))))
 	$(eval ARCH := $(word 2,$(subst _, ,$(PLATFORM))))
-	@echo "===========> Building binary $(COMMAND) $(VERSION) for $(OS) $(ARCH)"
 	@mkdir -p $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)
 	CGO_ENABLED=0 GOOS=$(OS) GOARCH=$(ARCH) go build $(GO_BUILD_FLAGS) -o $(OUTPUT_DIR)/platforms/$(OS)/$(ARCH)/$(COMMAND)$(GO_OUT_EXT) $(ROOT_PACKAGE)/cmd/$(COMMAND)

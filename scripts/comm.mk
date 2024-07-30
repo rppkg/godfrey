@@ -12,7 +12,6 @@ $(shell mkdir -p $(TMP_DIR))
 endif
 
 FIND := find $(ROOT_DIR) ! -path './third_party/*' ! -path './vendor/*'
-XARGS := xargs --no-run-if-empty
 
 ## 默认情况下，makefile使用/bin/sh作为shell
 SHELL := /bin/bash

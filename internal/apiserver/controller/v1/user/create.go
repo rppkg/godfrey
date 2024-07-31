@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *Controller) Create(c *gin.Context) {
+func (controller *Handler) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }

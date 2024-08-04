@@ -6,7 +6,7 @@ endif
 
 .PHONY: go.fmt
 go.fmt: tools.verify.gofumpt tools.verify.goimports
-	@$(FIND) -type f -name '*.go' -exec gofumpt -w {} +
+	@$(FIND) -type f -name '*.go' -exec gofumpt -extra -w {} +
 	@$(FIND) -type f -name '*.go' -exec goimports -w -local $(ROOT_PACKAGE) {} +
 	@go mod edit -fmt
 

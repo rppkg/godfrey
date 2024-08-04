@@ -20,8 +20,8 @@
 //	SecurityDefinitions:
 //	basic:
 //	  type: basic
-//	api_key:
-//	  type: token
+//	token:
+//	  type: apiKey
 //	  name: Authorization
 //	  in: header
 //

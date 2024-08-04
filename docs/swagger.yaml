@@ -150,10 +150,10 @@ responses:
 schemes:
     - http
 securityDefinitions:
-    api_key:
-        in: header
-        name: Authorization
-        type: token
     basic:
         type: basic
+    token:
+        in: header
+        name: Authorization
+        type: apiKey
 swagger: "2.0"

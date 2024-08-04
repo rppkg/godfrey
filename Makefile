@@ -3,7 +3,7 @@
 MAKEFLAGS += --no-print-directory
 
 .PHONY: all
-all: gen tidy format lint test build
+all: gen format tidy lint test build
 
 include scripts/comm.mk
 include scripts/tools.mk

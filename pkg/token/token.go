@@ -25,7 +25,7 @@ var (
 )
 
 // Init 设置包级别的配置 config, config 会用于本包后面的 token 签发和解析.
-func Init(key string, identityKey string) {
+func Init(key, identityKey string) {
 	once.Do(func() {
 		if key != "" {
 			config.key = key
@@ -37,7 +37,7 @@ func Init(key string, identityKey string) {
 }
 
 // Parse 使用指定的密钥 key 解析 token，解析成功返回 token 上下文，否则报错.
-func Parse(tokenString string, key string) (string, error) {
+func Parse(tokenString, key string) (string, error) {
 	// 解析 token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// 确保 token 加密算法是预期的加密算法
@@ -71,7 +71,7 @@ func ParseRequest(c *gin.Context) (string, error) {
 
 	var t string
 	// 从请求头中取出 token
-	fmt.Sscanf(header, "Bearer %s", &t)
+	_, _ = fmt.Sscanf(header, "Bearer %s", &t)
 
 	return Parse(t, config.key)
 }

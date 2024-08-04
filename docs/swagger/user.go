@@ -19,7 +19,7 @@ import v1 "github.com/rppkg/godfrey/pkg/api/v1"
 // Delete user according to input parameters.
 //
 // 	   Security:
-//       tokrn:
+//       token:
 //
 //     Responses:
 //       default: errResponse

@@ -24,7 +24,6 @@ linters:
     - whitespace
     - loggercheck
 
-
 issues:
   max-same-issues: 0
   exclude-files:
@@ -32,6 +31,7 @@ issues:
   exclude-dirs:
     - tests
     - examples
+    - docs
   exclude-rules:
     - path: _test.go
       linters:

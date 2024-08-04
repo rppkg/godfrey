@@ -79,7 +79,7 @@ paths:
                 default:
                     $ref: '#/responses/errResponse'
             security:
-                - tokrn: []
+                - token: []
             summary: Delete a user.
             tags:
                 - users

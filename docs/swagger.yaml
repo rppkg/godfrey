@@ -1,0 +1,159 @@
+basePath: /
+consumes:
+    - application/json
+definitions:
+    ErrResponse:
+        properties:
+            code:
+                type: string
+                x-go-name: Code
+            message:
+                type: string
+                x-go-name: Message
+        type: object
+        x-go-package: github.com/rppkg/godfrey/pkg/api/base
+    User:
+        properties:
+            createdAt:
+                type: string
+                x-go-name: CreatedAt
+            email:
+                type: string
+                x-go-name: Email
+            nickname:
+                type: string
+                x-go-name: Nickname
+            phone:
+                type: string
+                x-go-name: Phone
+            postCount:
+                format: int64
+                type: integer
+                x-go-name: PostCount
+            updatedAt:
+                type: string
+                x-go-name: UpdatedAt
+            username:
+                type: string
+                x-go-name: Username
+        type: object
+        x-go-package: github.com/rppkg/godfrey/pkg/api/v1
+host: 127.0.0.1:8080
+info:
+    description: Identity and Access Management System.
+    title: Godfrey API Server API.
+    version: 1.0.0
+paths:
+    /users:
+        post:
+            description: Regist users according to input parameters.
+            operationId: regisUserRequest
+            parameters:
+                - description: User information.
+                  in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/User'
+            responses:
+                "200":
+                    $ref: '#/responses/registUserResponse'
+                default:
+                    $ref: '#/responses/errResponse'
+            summary: Regist a user.
+            tags:
+                - users
+    /users/{name}:
+        delete:
+            description: Delete user according to input parameters.
+            operationId: deleteUserRequest
+            parameters:
+                - description: User name.
+                  in: path
+                  name: name
+                  required: true
+                  type: string
+                  x-go-name: Name
+            responses:
+                "200":
+                    $ref: '#/responses/okResponse'
+                default:
+                    $ref: '#/responses/errResponse'
+            security:
+                - tokrn: []
+            summary: Delete a user.
+            tags:
+                - users
+        get:
+            description: Get details for specified user according to input parameters.
+            operationId: getUserRequest
+            parameters:
+                - description: User name.
+                  in: path
+                  name: name
+                  required: true
+                  type: string
+                  x-go-name: Name
+            responses:
+                "200":
+                    $ref: '#/responses/getUserResponse'
+                default:
+                    $ref: '#/responses/errResponse'
+            summary: Get details for specified user.
+            tags:
+                - users
+        put:
+            description: Update user according to input parameters.
+            operationId: updateUserRequest
+            parameters:
+                - description: User information.
+                  in: body
+                  name: Body
+                  schema:
+                    $ref: '#/definitions/User'
+                - description: User name.
+                  in: path
+                  name: name
+                  required: true
+                  type: string
+                  x-go-name: Name
+            responses:
+                "200":
+                    $ref: '#/responses/updateUserResponse'
+                default:
+                    $ref: '#/responses/errResponse'
+            security:
+                - token: []
+            summary: Update user.
+            tags:
+                - users
+produces:
+    - application/json
+responses:
+    errResponse:
+        description: ErrResponse defines the return messages when an error occurred.
+        schema:
+            $ref: '#/definitions/ErrResponse'
+    getUserResponse:
+        description: User response.
+        schema:
+            $ref: '#/definitions/User'
+    okResponse:
+        description: Return nil json object.
+    registUserResponse:
+        description: User response.
+        schema:
+            $ref: '#/definitions/User'
+    updateUserResponse:
+        description: User response.
+        schema:
+            $ref: '#/definitions/User'
+schemes:
+    - http
+securityDefinitions:
+    api_key:
+        in: header
+        name: Authorization
+        type: token
+    basic:
+        type: basic
+swagger: "2.0"

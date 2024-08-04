@@ -9,6 +9,7 @@ include scripts/comm.mk
 include scripts/tools.mk
 include scripts/gen.mk
 include scripts/golang.mk
+include scripts/doc.mk
 
 define USAGE_OPTIONS
 Options:
@@ -26,7 +27,7 @@ export USAGE_OPTIONS
 
 .PHONY: gen
 gen:
-	@$(MAKE) gen.query
+	@$(MAKE) gen.all
 
 .PHONY: tidy
 tidy:
@@ -51,3 +52,7 @@ build:
 .PHONY: clean
 clean:
 	@-rm -vrf $(OUTPUT_DIR)
+
+.PHONY: docserver
+docserver:
+	@$(MAKE) doc.serve

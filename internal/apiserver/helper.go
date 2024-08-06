@@ -1,7 +1,6 @@
 package apiserver
 
 import (
-	"github.com/rppkg/godfrey/pkg/token"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -9,6 +8,7 @@ import (
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
 	"github.com/rppkg/godfrey/internal/pkg/models"
 	"github.com/rppkg/godfrey/pkg/db/mysql"
+	"github.com/rppkg/godfrey/pkg/token"
 )
 
 var cfg string

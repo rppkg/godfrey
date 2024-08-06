@@ -22,7 +22,7 @@ func SignSalt() string {
 	return string(salt)
 }
 
-func SignSaltPwd(pwd, salt string) string {
+func SignPwdWithSalt(pwd, salt string) string {
 	hash := hmac.New(md5.New, []byte("hGZU8nBYE0YZcMTKMb9q"))
 	hash.Write([]byte(pwd + salt))
 	encrypted := hex.EncodeToString(hash.Sum([]byte("")))

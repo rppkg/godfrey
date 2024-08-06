@@ -7,5 +7,6 @@ import (
 )
 
 func (h *Handler) Login(c *gin.Context) {
+
 	c.JSON(http.StatusOK, nil)
 }

@@ -36,6 +36,11 @@ to quickly create a Cobra application.`,
 				gin.SetMode(gin.ReleaseMode)
 			}
 
+			if err := initToken(); err != nil {
+				log.Error("Init token", slog.Any("error", err))
+				return err
+			}
+
 			if err := initDal(); err != nil {
 				log.Error("Init dal", slog.Any("error", err))
 				return err

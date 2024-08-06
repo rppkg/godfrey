@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,8 +11,15 @@ import (
 
 func Authn() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 解析 JWT Token
-		username, err := token.ParseRequest(c)
+		auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+		if len(auth) != 2 || auth[0] != "Bearer" {
+			c.JSON(http.StatusForbidden, nil)
+			c.Abort()
+
+			return
+		}
+
+		username, err := token.Parse(auth[1])
 		if err != nil {
 			c.JSON(http.StatusForbidden, nil)
 			c.Abort()

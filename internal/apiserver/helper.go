@@ -1,6 +1,7 @@
 package apiserver
 
 import (
+	"github.com/rppkg/godfrey/pkg/token"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -51,6 +52,17 @@ func initDal() error {
 	}
 
 	dal.InitDB(gormDB)
+
+	return nil
+}
+
+func initToken() error {
+	tokenOptions := &token.Options{
+		SecretKey:   viper.GetString("APISERVER_JWT_SECRET_KEY"),
+		IdentityKey: viper.GetString("APISERVER_IDENTITY_KEY"),
+	}
+
+	token.Init(tokenOptions)
 
 	return nil
 }

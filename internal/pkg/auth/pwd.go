@@ -1,4 +1,4 @@
-package pwd
+package auth
 
 import (
 	"crypto/hmac"

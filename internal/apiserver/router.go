@@ -36,7 +36,6 @@ func initRouters(g *gin.Engine) error {
 }
 
 func initUserRouters(r *gin.RouterGroup, u *user.Handler, a *auth.Authz) {
-
 	v1 := r.Group("/v1")
 	{
 		userv1 := v1.Group("/users")

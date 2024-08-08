@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	// casbin 访问控制模型. r: 请求标识符；p: 策略标识符；e: 策略效果；m: 匹配器；
+	// casbin 访问控制模型. r: 请求标识符; p: 策略标识符; e: 策略效果; m: 匹配器.
 	aclModel = `[request_definition]
 r = sub, obj, act
 

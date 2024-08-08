@@ -7,30 +7,30 @@ import (
 )
 
 var (
-	once sync.Once
-	dal  *Dal
+	once   sync.Once
+	client IClient
 )
 
-type IDal interface {
+type IClient interface {
 	DB() *gorm.DB
 }
 
-type Dal struct {
+type Client struct {
 	gdb *gorm.DB
 }
 
-var _ IDal = (*Dal)(nil)
+var _ IClient = (*Client)(nil)
 
-func (ms *Dal) DB() *gorm.DB {
+func (ms *Client) DB() *gorm.DB {
 	return ms.gdb
 }
 
-func GetDal() *Dal {
-	return dal
+func Cli() IClient {
+	return client
 }
 
 func InitDB(gdb *gorm.DB) {
 	once.Do(func() {
-		dal = &Dal{gdb}
+		client = &Client{gdb}
 	})
 }

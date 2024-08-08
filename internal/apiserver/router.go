@@ -19,7 +19,11 @@ func initRouters(g *gin.Engine) error {
 		c.JSON(http.StatusOK, "ok")
 	})
 
-	authz, err := auth.NewAuthz(dal.GetDal().DB())
+	g.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, "Page Not Found.")
+	})
+
+	authz, err := auth.NewAuthz(dal.Cli().DB())
 	if err != nil {
 		return err
 	}

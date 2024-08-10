@@ -4,33 +4,46 @@ import (
 	"sync"
 
 	"gorm.io/gorm"
+
+	"github.com/rppkg/godfrey/internal/apiserver/dal/query"
 )
 
 var (
-	once   sync.Once
-	client IClient
+	once sync.Once
+	d    IDal
 )
 
-type IClient interface {
+type IDal interface {
 	DB() *gorm.DB
+	Q() *query.Query
+	Users() IUserDal
 }
 
-type Client struct {
-	gdb *gorm.DB
+type D struct {
+	db *gorm.DB
+	q  *query.Query
 }
 
-var _ IClient = (*Client)(nil)
+var _ IDal = (*D)(nil)
 
-func (ms *Client) DB() *gorm.DB {
-	return ms.gdb
+func (d *D) DB() *gorm.DB {
+	return d.db
 }
 
-func Cli() IClient {
-	return client
+func (d *D) Q() *query.Query {
+	return d.q
 }
 
-func InitDB(gdb *gorm.DB) {
+func Cli() IDal {
+	return d
+}
+
+func Init(db *gorm.DB) {
 	once.Do(func() {
-		client = &Client{gdb}
+		d = &D{db, query.Use(db)}
 	})
+}
+
+func (d *D) Users() IUserDal {
+	return newUsers(d.q)
 }

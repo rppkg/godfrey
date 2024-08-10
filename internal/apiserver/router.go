@@ -28,7 +28,7 @@ func initRouters(g *gin.Engine) error {
 		return err
 	}
 
-	userH := user.NewHandler()
+	userH := user.New(dal.Cli(), authz)
 
 	g.POST("/login", userH.Login)
 

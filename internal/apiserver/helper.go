@@ -51,7 +51,7 @@ func initDal() error {
 		return err
 	}
 
-	dal.InitDB(gormDB)
+	dal.Init(gormDB)
 
 	return nil
 }

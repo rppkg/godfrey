@@ -34,12 +34,12 @@ func initRouters(g *gin.Engine) error {
 
 	api := g.Group("/api")
 
-	initUserRouters(api, userH, authz)
+	initApiUserRouters(api, userH, authz)
 
 	return nil
 }
 
-func initUserRouters(r *gin.RouterGroup, u *user.Handler, a *auth.Authz) {
+func initApiUserRouters(r *gin.RouterGroup, u *user.Handler, a *auth.Authz) {
 	v1 := r.Group("/v1")
 	{
 		userv1 := v1.Group("/users")

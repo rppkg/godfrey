@@ -13,15 +13,15 @@ func Authn() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 		if len(auth) != 2 || auth[0] != "Bearer" {
-			c.JSON(http.StatusForbidden, nil)
+			c.Status(http.StatusUnauthorized)
 			c.Abort()
 
 			return
 		}
 
 		username, err := token.Parse(auth[1])
-		if err != nil {
-			c.JSON(http.StatusForbidden, nil)
+		if err != nil || len(username) == 0 {
+			c.Status(http.StatusUnauthorized)
 			c.Abort()
 
 			return

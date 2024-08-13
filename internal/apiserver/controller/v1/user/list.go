@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *Handler) List(c *gin.Context) {
+func (h *Handler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }

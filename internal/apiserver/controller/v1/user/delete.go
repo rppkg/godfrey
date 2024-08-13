@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *Handler) Delete(c *gin.Context) {
+func (h *Handler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }

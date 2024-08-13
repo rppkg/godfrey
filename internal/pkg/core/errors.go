@@ -1,4 +1,4 @@
-package code
+package core
 
 import (
 	"errors"
@@ -6,7 +6,6 @@ import (
 )
 
 type ErrCode struct {
-	ICode    string
 	HTTPCode int
 	Message  string
 }
@@ -20,15 +19,11 @@ func (err ErrCode) SetMessage(format string, args ...interface{}) ErrCode {
 	return err
 }
 
-func (err ErrCode) Code() string {
-	return err.ICode
-}
-
 func (err ErrCode) String() string {
 	return err.Message
 }
 
-func (err ErrCode) HTTPStatus() int {
+func (err ErrCode) HCode() int {
 	if err.HTTPCode == 0 {
 		return 500
 	}
@@ -36,14 +31,14 @@ func (err ErrCode) HTTPStatus() int {
 	return err.HTTPCode
 }
 
-func Decode(err error) (int, string, string) {
+func Decode(err error) (hcode int, message string) {
 	if err == nil {
-		return OK.HTTPCode, OK.ICode, OK.Message
+		return HTTP200.HTTPCode, HTTP200.Message
 	}
 
 	var e *ErrCode
 	if errors.As(err, &e) {
-		return e.HTTPCode, e.ICode, e.Message
+		return e.HTTPCode, e.Message
 	}
-	return InternalServerError.HTTPCode, InternalServerError.ICode, err.Error()
+	return InternalServerError.HTTPCode, err.Error()
 }

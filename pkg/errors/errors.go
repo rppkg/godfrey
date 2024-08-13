@@ -1,7 +1,6 @@
 package errors
 
-type Coder interface {
-	Code() string
+type GodfreyCoder interface {
 	String() string
-	HTTPStatus() int
+	HCode() int
 }

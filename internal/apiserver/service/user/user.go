@@ -2,7 +2,8 @@ package user
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/rppkg/godfrey/internal/pkg/core"
 
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
 	"github.com/rppkg/godfrey/internal/pkg/auth"
@@ -27,16 +28,16 @@ func New(dal dal.IDal) *Service {
 func (s *Service) Login(ctx context.Context, r *v1.LoginUserRequest) (*v1.LoginUserResponse, error) {
 	user, err := s.dal.Users().Get(ctx, r.Username)
 	if err != nil {
-		return nil, err
+		return nil, core.HTTP500.SetMessage(err.Error())
 	}
 
 	if user.Password != auth.SignPwdWithSalt(r.Password, user.Salt) {
-		return nil, fmt.Errorf("密码错误")
+		return nil, core.HTTP500.SetMessage("密码错误")
 	}
 
 	tokenStr, err := token.Sign(r.Username)
 	if err != nil {
-		return nil, err
+		return nil, core.HTTP500.SetMessage(err.Error())
 	}
 
 	return &v1.LoginUserResponse{Token: tokenStr}, nil

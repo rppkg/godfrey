@@ -56,3 +56,7 @@ clean:
 .PHONY: docserver
 docserver:
 	@$(MAKE) doc.serve
+
+.PHONY: air
+air:
+	@$(MAKE) go.air

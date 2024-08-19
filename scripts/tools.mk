@@ -1,4 +1,4 @@
-TOOLS ?= gofumpt golangci-lint goimports gotests mockgen swagger
+TOOLS ?= gofumpt golangci-lint goimports gotests mockgen swagger air
 
 .PHONY: tools.verify
 tools.verify: $(addprefix tools.verify., $(TOOLS))
@@ -41,3 +41,8 @@ install.mockgen:
 .PHONY: install.swagger
 install.swagger:
 	@go install github.com/go-swagger/go-swagger/cmd/swagger@v0.31.0
+
+.PHONY: install.air
+install.air:
+	@go install github.com/air-verse/air@v1.52.3
+	@air init

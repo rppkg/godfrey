@@ -2,12 +2,13 @@ package middleware
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
-var ErrorLimitExceeded = errors.New("Limit exceeded")
+var ErrorLimitExceeded = errors.New("limit exceeded")
 
 func Limit(maxEventsPerSec float64, maxBurstSize int) gin.HandlerFunc {
 	limiter := rate.NewLimiter(rate.Limit(maxEventsPerSec), maxBurstSize)
@@ -20,6 +21,6 @@ func Limit(maxEventsPerSec float64, maxBurstSize int) gin.HandlerFunc {
 		}
 
 		_ = c.Error(ErrorLimitExceeded)
-		c.AbortWithStatus(429)
+		c.AbortWithStatus(http.StatusTooManyRequests)
 	}
 }

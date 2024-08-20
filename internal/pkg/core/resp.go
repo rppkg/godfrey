@@ -7,14 +7,15 @@ import (
 )
 
 var (
-	HTTP200 = &GodfreyErr{HTTPCode: http.StatusOK, Message: ""}
-	HTTP400 = &GodfreyErr{HTTPCode: http.StatusBadRequest, Message: ""}
-	HTTP401 = &GodfreyErr{HTTPCode: http.StatusUnauthorized, Message: ""}
-	HTTP403 = &GodfreyErr{HTTPCode: http.StatusForbidden, Message: ""}
-	HTTP404 = &GodfreyErr{HTTPCode: http.StatusNotFound, Message: ""}
-	HTTP500 = &GodfreyErr{HTTPCode: http.StatusInternalServerError, Message: ""}
+	HTTP200 = &GodfreyErr{HTTPCode: http.StatusOK, Message: "成功"}
+	HTTP400 = &GodfreyErr{HTTPCode: http.StatusBadRequest, Message: "参数错误"}
+	HTTP401 = &GodfreyErr{HTTPCode: http.StatusUnauthorized, Message: "认证未通过"}
+	HTTP403 = &GodfreyErr{HTTPCode: http.StatusForbidden, Message: "权限不够"}
+	HTTP404 = &GodfreyErr{HTTPCode: http.StatusNotFound, Message: "页面未找到"}
+	HTTP500 = &GodfreyErr{HTTPCode: http.StatusInternalServerError, Message: "服务器内部错误"}
 
-	ErrBind = &GodfreyErr{HTTPCode: http.StatusBadRequest, Message: "参数绑定错误"}
+	ErrBindJSON = &GodfreyErr{HTTPCode: http.StatusBadRequest, Message: "参数绑定错误"}
+	ErrValidate = &GodfreyErr{HTTPCode: http.StatusBadRequest, Message: "参数校验错误"}
 
 	InternalServerError = &GodfreyErr{HTTPCode: http.StatusInternalServerError, Message: "服务器内部错误"}
 )

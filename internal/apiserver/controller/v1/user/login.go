@@ -10,7 +10,7 @@ import (
 func (h *Handler) Login(c *gin.Context) {
 	var r v1.LoginUserRequest
 	if err := c.ShouldBindJSON(&r); err != nil {
-		core.JSONResponse(c, core.ErrBind, nil)
+		core.JSONResponse(c, core.ErrBindJSON, nil)
 		return
 	}
 

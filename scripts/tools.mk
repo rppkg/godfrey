@@ -22,7 +22,7 @@ install.gofumpt:
 
 .PHONY: install.golangci-lint
 install.golangci-lint:
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.1
 	@golangci-lint completion bash > $(HOME)/.golangci-lint.bash
 	@if ! grep -q .golangci-lint.bash $(HOME)/.bashrc; then echo "source \$$HOME/.golangci-lint.bash" >> $(HOME)/.bashrc; fi
 

@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
 	"github.com/rppkg/godfrey/internal/apiserver/service"
 	"github.com/rppkg/godfrey/internal/pkg/auth"
@@ -13,6 +14,7 @@ type Handler struct {
 }
 
 type IHandler interface {
+	Create(c *gin.Context)
 	Login(c *gin.Context)
 	Get(c *gin.Context)
 	Update(c *gin.Context)

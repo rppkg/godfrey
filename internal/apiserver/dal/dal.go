@@ -15,7 +15,7 @@ var (
 
 type IDal interface {
 	DB() *gorm.DB
-	Q() *query.Query
+	DBQuery() *query.Query
 	Users() IUserDal
 }
 
@@ -30,7 +30,7 @@ func (d *D) DB() *gorm.DB {
 	return d.db
 }
 
-func (d *D) Q() *query.Query {
+func (d *D) DBQuery() *query.Query {
 	return d.q
 }
 

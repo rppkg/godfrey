@@ -44,6 +44,7 @@ func initAPIUserRouters(r *gin.RouterGroup, u user.IHandler, a *auth.Authz) {
 	{
 		userv1 := v1.Group("/users")
 
+		userv1.POST("", u.Create)
 		userv1.Use(middleware.Authn(), middleware.Authz(a))
 		userv1.GET(":username", u.Get)
 		userv1.PUT(":username", u.Update)

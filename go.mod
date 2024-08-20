@@ -3,7 +3,9 @@ module github.com/rppkg/godfrey
 go 1.23
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.8.1
 	go.uber.org/automaxprocs v1.5.3

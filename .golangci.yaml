@@ -32,6 +32,7 @@ issues:
     - tests
     - examples
     - docs
+    - internal/apiserver/dal/query
   exclude-rules:
     - path: _test.go
       linters:

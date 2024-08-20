@@ -16,11 +16,11 @@ func initRouters(g *gin.Engine) error {
 	pprof.Register(g)
 
 	g.GET("/healthz", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "ok")
+		c.Status(http.StatusOK)
 	})
 
 	g.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, "Page Not Found.")
+		c.Status(http.StatusNotFound)
 	})
 
 	authz, err := auth.NewAuthz(dal.Cli().DB())
@@ -28,7 +28,7 @@ func initRouters(g *gin.Engine) error {
 		return err
 	}
 
-	userH := user.New(dal.Cli(), authz)
+	userH := user.NewHandle(dal.Cli(), authz)
 
 	g.POST("/login", userH.Login)
 
@@ -39,15 +39,14 @@ func initRouters(g *gin.Engine) error {
 	return nil
 }
 
-func initAPIUserRouters(r *gin.RouterGroup, u *user.Handler, a *auth.Authz) {
+func initAPIUserRouters(r *gin.RouterGroup, u user.IHandler, a *auth.Authz) {
 	v1 := r.Group("/v1")
 	{
 		userv1 := v1.Group("/users")
-		userv1.POST("", u.Regist)
 
 		userv1.Use(middleware.Authn(), middleware.Authz(a))
-		userv1.PUT(":username", u.Update)
 		userv1.GET(":username", u.Get)
+		userv1.PUT(":username", u.Update)
 		userv1.GET("", u.List)
 		userv1.DELETE(":username", u.Delete)
 	}

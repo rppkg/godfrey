@@ -15,10 +15,10 @@ type Service struct {
 	dal dal.IDal
 }
 
-func New(dal dal.IDal) *Service {
+func New(dal dal.IDal) IService {
 	return &Service{dal: dal}
 }
 
 func (s *Service) Users() user.IService {
-	return user.New(s.dal)
+	return user.NewService(s.dal)
 }

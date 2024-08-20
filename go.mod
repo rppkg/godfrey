@@ -1,6 +1,6 @@
 module github.com/rppkg/godfrey
 
-go 1.22.0
+go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.10.0
@@ -10,7 +10,7 @@ require (
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gen v0.3.26
 	gorm.io/gorm v1.25.11
-	gorm.io/plugin/dbresolver v1.5.0
+	gorm.io/plugin/dbresolver v1.5.2
 )
 
 require (

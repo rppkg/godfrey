@@ -17,7 +17,7 @@ type UserDal struct {
 
 var _ IUserDal = (*UserDal)(nil)
 
-func newUsers(q *query.Query) *UserDal {
+func NewUserDal(q *query.Query) IUserDal {
 	return &UserDal{q}
 }
 

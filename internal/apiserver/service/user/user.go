@@ -3,10 +3,9 @@ package user
 import (
 	"context"
 
-	"github.com/rppkg/godfrey/internal/pkg/core"
-
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
 	"github.com/rppkg/godfrey/internal/pkg/auth"
+	"github.com/rppkg/godfrey/internal/pkg/core"
 	v1 "github.com/rppkg/godfrey/pkg/api/v1"
 	"github.com/rppkg/godfrey/pkg/token"
 )
@@ -21,7 +20,7 @@ type Service struct {
 
 var _ IService = (*Service)(nil)
 
-func New(dal dal.IDal) *Service {
+func NewService(dal dal.IDal) IService {
 	return &Service{dal: dal}
 }
 

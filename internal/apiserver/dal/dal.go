@@ -45,5 +45,5 @@ func Init(db *gorm.DB) {
 }
 
 func (d *D) Users() IUserDal {
-	return newUsers(d.q)
+	return NewUserDal(d.q)
 }

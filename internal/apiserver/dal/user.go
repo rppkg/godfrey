@@ -8,6 +8,7 @@ import (
 )
 
 type IUserDal interface {
+	Create(ctx context.Context, user *models.User) (*models.User, error)
 	Get(ctx context.Context, username string) (*models.User, error)
 	List(ctx context.Context, offset, limit int) ([]*models.User, int64, error)
 	Update(ctx context.Context, user *models.User) error
@@ -22,6 +23,19 @@ var _ IUserDal = (*UserDal)(nil)
 
 func NewUserDal(q *query.Query) IUserDal {
 	return &UserDal{q}
+}
+
+func (ud *UserDal) Create(ctx context.Context, user *models.User) (*models.User, error) {
+	err := ud.q.User.WithContext(ctx).Create(user)
+	if err != nil {
+		return nil, err
+	}
+
+	item, err := ud.Get(ctx, user.Username)
+	if err != nil {
+		return nil, err
+	}
+	return item, nil
 }
 
 func (ud *UserDal) Get(ctx context.Context, username string) (*models.User, error) {

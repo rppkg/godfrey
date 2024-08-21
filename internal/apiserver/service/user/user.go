@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"github.com/rppkg/godfrey/internal/pkg/models"
 	"log/slog"
 
 	"github.com/jinzhu/copier"
@@ -17,6 +18,7 @@ import (
 )
 
 type IService interface {
+	Create(ctx context.Context, r *v1.CreateUserRequest) (*v1.CreateUserResponse, error)
 	Login(ctx context.Context, r *v1.LoginUserRequest) (*v1.LoginUserResponse, error)
 	Get(ctx context.Context, username string) (*v1.GetUserResponse, error)
 	List(ctx context.Context, r *v1.ListUserRequest) (*v1.ListUserResponse, error)
@@ -32,6 +34,22 @@ var _ IService = (*Service)(nil)
 
 func NewService(dal dal.IDal) IService {
 	return &Service{dal: dal}
+}
+
+func (s *Service) Create(ctx context.Context, r *v1.CreateUserRequest) (*v1.CreateUserResponse, error) {
+	var user models.User
+	_ = copier.Copy(&user, r)
+
+	item, err := s.dal.Users().Create(ctx, &user)
+	if err != nil {
+		log.Error("创建用户错误", slog.Any("error", err))
+		return nil, core.HTTP500.SetMessage("创建用户错误")
+	}
+
+	var resp v1.CreateUserResponse
+	_ = copier.Copy(&resp, item)
+
+	return &resp, nil
 }
 
 func (s *Service) Login(ctx context.Context, r *v1.LoginUserRequest) (*v1.LoginUserResponse, error) {

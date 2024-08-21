@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/asaskevich/govalidator"
+	valid "github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 
 	"github.com/rppkg/godfrey/internal/pkg/core"
@@ -15,7 +15,7 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	if _, err := govalidator.ValidateStruct(r); err != nil {
+	if _, err := valid.ValidateStruct(r); err != nil {
 		core.JSONResponse(c, core.ErrValidate.SetMessage("参数校验错误: %v", err.Error()), nil)
 		return
 	}

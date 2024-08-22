@@ -13,6 +13,8 @@ var (
 	d    IDal
 )
 
+//go:generate mockgen -self_package=github.com/rppkg/godfrey/internal/apiserver/dal -destination mock_dal.go -package dal github.com/rppkg/godfrey/internal/apiserver/dal IDal,IUserDal
+
 type IDal interface {
 	DB() *gorm.DB
 	DBQuery() *query.Query

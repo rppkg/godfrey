@@ -2,69 +2,45 @@ package user
 
 import (
 	"context"
-	"reflect"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 
 	"github.com/rppkg/godfrey/internal/apiserver/dal"
-	v1 "github.com/rppkg/godfrey/pkg/api/v1"
+	"github.com/rppkg/godfrey/internal/pkg/models"
 )
 
-func BenchmarkService_Get(b *testing.B) {
-	// Benchmark test
-}
-
-func TestNewService(t *testing.T) {
+func TestService_Get(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	type args struct {
-		dal dal.IDal
-	}
-	tests := []struct {
-		name string
-		args args
-		want IService
-	}{
-		{
-			name: "TestNewService",
-			args: args{dal: dal.NewMockInitDal(ctrl)},
-			want: NewService(dal.NewMockInitDal(ctrl)),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewService(tt.args.dal); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewService() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+	mockDal := dal.NewMockIDal(ctrl)
+	mockUserDal := dal.NewMockIUserDal(ctrl)
+	mockDal.EXPECT().Users().AnyTimes().Return(mockUserDal)
 
-func TestService_Create(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	mockUserDal := dal.NewMockUserDal(ctrl)
-
-	mockdal := dal.NewMockInitDal(ctrl)
-	mockdal.EXPECT().Users().Return(mockUserDal)
-
-	s := &Service{
-		dal: mockdal,
+	u1 := &models.User{
+		ID:        "id1",
+		Username:  "username1",
+		Nickname:  nil,
+		Password:  "password1",
+		Salt:      "salt1",
+		Avatar:    "avatar1",
+		Email:     "email1",
+		Phone:     "phone1",
+		RoleID:    "role_id1",
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		DeletedAt: gorm.DeletedAt{},
+		Role:      nil,
 	}
 
-	req := &v1.CreateUserRequest{
-		Username: "x1",
-		Nickname: "x1",
-		Email:    "abc@gmail.com",
-		Phone:    "18888888888",
-		Password: "xxxx",
-	}
+	mockUserDal.EXPECT().Get(gomock.Any(), "godfrey").Return(u1, nil)
 
-	got, err := s.Create(context.Background(), req)
+	s := &Service{dal: mockDal}
+	user, err := s.Get(context.Background(), "godfrey")
 	assert.Nil(t, err)
-	assert.Equal(t, got, req)
+	assert.Equal(t, user.Username, u1.Username)
 }

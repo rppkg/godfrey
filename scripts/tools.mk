@@ -36,7 +36,7 @@ install.gotests:
 
 .PHONY: install.mockgen
 install.mockgen:
-	@go install github.com/uber-go/mock/mockgen@v0.4.0
+	@go install github.com/golang/mock/mockgen@v1.6.0
 
 .PHONY: install.swagger
 install.swagger:

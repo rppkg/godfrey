@@ -18,6 +18,8 @@ import (
 	"github.com/rppkg/godfrey/pkg/token"
 )
 
+//go:generate mockgen -destination mock/mock_user.go -package user github.com/rppkg/godfrey/internal/apiserver/service/user IService
+
 type IService interface {
 	Create(ctx context.Context, r *v1.CreateUserRequest) (*v1.CreateUserResponse, error)
 	Login(ctx context.Context, r *v1.LoginUserRequest) (*v1.LoginUserResponse, error)

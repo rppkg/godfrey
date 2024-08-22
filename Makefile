@@ -64,3 +64,8 @@ air:
 .PHONY: genunittest
 genunittest:
 	@gotests -all -w .
+
+.PHONY: vcoverage
+vcoverage:
+	@go tool cover -func=$(OUTPUT_DIR)/coverage.out
+	@go tool cover -html=$(OUTPUT_DIR)/coverage.out -o $(OUTPUT_DIR)/coverage.html

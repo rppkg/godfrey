@@ -30,6 +30,7 @@ go.test:
 		sed -i '/mock_.*.go/d' $(OUTPUT_DIR)/coverage.out; \
 		sed -i '/internal\/apiserver\/dal\/.*.go/d' $(OUTPUT_DIR)/coverage.out; \
 	fi
+	@go tool cover -html=$(OUTPUT_DIR)/coverage.out -o $(OUTPUT_DIR)/coverage.html
 
 .PHONY: go.bench
 go.bench:

@@ -13,6 +13,11 @@ import (
 )
 
 func initRouters(g *gin.Engine) error {
+	// NOTE: 性能分析，一般可以通过基准测试，代码生成，http服务生成性能数据分拣，再分析这些性能数据文件
+	// 通过host:port/debug/pprof 打开profiles
+	// 通过curl host:port/debug/pprof/profile -o cpu.profile 获取cpu性能30s数据文件
+	// 通过curl host:port/debug/pprof/heap -o mem.profile 获取mem性能数据文件
+	// 通过go tool pprof [mem|cpu].profile 分析http服务cpu和mem的性能
 	pprof.Register(g)
 
 	g.GET("/healthz", func(c *gin.Context) {

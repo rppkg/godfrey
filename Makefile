@@ -60,3 +60,7 @@ docserver:
 .PHONY: air
 air:
 	@$(MAKE) go.air
+
+.PHONY: genunittest
+genunittest:
+	@gotests -all -w .

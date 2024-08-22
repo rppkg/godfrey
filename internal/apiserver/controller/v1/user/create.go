@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
+
 	"github.com/rppkg/godfrey/internal/pkg/core"
 	v1 "github.com/rppkg/godfrey/pkg/api/v1"
 )

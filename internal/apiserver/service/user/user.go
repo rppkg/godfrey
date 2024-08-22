@@ -3,8 +3,9 @@ package user
 import (
 	"context"
 	"errors"
-	"github.com/rppkg/godfrey/internal/pkg/models"
 	"log/slog"
+
+	"github.com/rppkg/godfrey/internal/pkg/models"
 
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"

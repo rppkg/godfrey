@@ -31,6 +31,10 @@ go.test:
 		sed -i '/internal\/apiserver\/dal\/.*.go/d' $(OUTPUT_DIR)/coverage.out; \
 	fi
 
+.PHONY: go.bench
+go.bench:
+	@go test -bench=".*" -benchmem -benchtime=10s -cpu=4 -timeout=30s
+
 COMMANDS ?= $(filter-out %.md, $(wildcard $(ROOT_DIR)/cmd/*))
 BINS ?= $(foreach cmd,${COMMANDS},$(notdir $(cmd)))
 

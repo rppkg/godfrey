@@ -37,7 +37,7 @@ func initDal() error {
 		LogLevel:              viper.GetInt("APISERVER_DB_LOG_LEVEL"),
 	}
 
-	gormDB, err := mysql.InitDB(dbOptions)
+	gormDB, err := mysql.Init(dbOptions)
 	if err != nil {
 		return err
 	}

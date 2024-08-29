@@ -34,7 +34,7 @@ func (o *Options) DSN() string {
 		"Local")
 }
 
-func InitDB(opts *Options) (*gorm.DB, error) {
+func Init(opts *Options) (*gorm.DB, error) {
 	logLevel := logger.Silent
 	if opts.LogLevel != 0 {
 		logLevel = logger.LogLevel(opts.LogLevel)

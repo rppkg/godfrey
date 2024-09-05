@@ -4,7 +4,7 @@ metadata:
   labels:
     app: godfrey-apiserver
   name: godfrey-apiserver
-  namespace: default
+  namespace: godfrey
 spec:
   clusterIP: 192.168.0.231 # 虚拟服务地址
   externalTrafficPolicy: Cluster # 表示此服务是否希望将外部流量路由到节点本地或集群范围的端点

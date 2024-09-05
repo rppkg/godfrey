@@ -5,7 +5,7 @@ metadata:
   labels: # 设定资源的标签
     app: godfrey-apiserver
   name: godfrey-apiserver
-  namespace: default
+  namespace: godfrey
 spec:
   progressDeadlineSeconds: 10 # 指定多少时间内不能完成滚动升级就视为失败，滚动升级自动取消
   replicas: 1 # 声明副本数，建议 >= 2
@@ -15,8 +15,8 @@ spec:
       app: godfrey-apiserver # 标签格式为key: value对
   strategy: # 指定部署策略
     rollingUpdate:
-      maxSurge: 1 # 最大额外可以存在的副本数，可以为百分比，也可以为整数
-      maxUnavailable: 1 # 表示在更新过程中能够进入不可用状态的 Pod 的最大值，可以为百分比，也可以为整数
+      maxSurge: 1 # 最大额外可以存在的副本数，可以为百分比，也可以为整数。意味着在更新过程中，新创建的 Pods 数量可以超过预期的副本数，但最多只会多出一个 Pod
+      maxUnavailable: 1 # 表示在更新过程中能够进入不可用状态的 Pod 的最大值，可以为百分比，也可以为整数。表示在滚动更新过程中，最多可以有一个不可用的 Pod。这意味着在任何时候，不可用的 Pods 数量不会超过一个。
     type: RollingUpdate # 更新策略，包括：重建(Recreate)、RollingUpdate(滚动更新)
   template: # 指定Pod创建模板。注意：以下定义为Pod的资源定义
     metadata: # 指定Pod的元数据
@@ -25,28 +25,28 @@ spec:
     spec:
       affinity:
         podAntiAffinity: # Pod反亲和性，尽量避免同一个应用调度到相同Node
-          preferredDuringSchedulingIgnoredDuringExecution: # 软需求
-          - podAffinityTerm:
-              labelSelector:
+          preferredDuringSchedulingIgnoredDuringExecution: # 软约束，表示调度器会尽量遵循这个亲和性约束，但如果无法满足，它会忽略这个约束并继续调度。
+          - podAffinityTerm: # 反亲和性条件
+              labelSelector: # 标签选择器，满足标签的Pod应用反亲和约束
                 matchExpressions: # 有多个选项，只有同时满足这些条件的节点才能运行 Pod
                 - key: app
                   operator: In # 设定标签键与一组值的关系，In、NotIn、Exists、DoesNotExist
                   values:
                   - godfrey-apiserver
-              topologyKey: kubernetes.io/hostname
-            weight: 100 # weight 字段值的范围是1-100。
+              topologyKey: kubernetes.io/hostname # 反亲和性的拓扑域，避免将同一个应用（godfrey-apiserver）的多个 Pod 调度到相同的节点上。
+            weight: 100 # weight 字段值的范围是1-100。权重值越高，调度器越倾向于遵循这个规则。
       containers:
       - command: # 指定运行命令
         - /opt/godfrey/bin/godfrey-apiserver # 运行参数
         - --config=/etc/godfrey/godfrey-apiserver.yaml
         image: ccr.ccs.tencentyun.com/lkccc/godfrey-apiserver-amd64:v1.0.6 # 镜像名，遵守镜像命名规范
-        imagePullPolicy: Always # 镜像拉取策略。IfNotPresent：优先使用本地镜像；Never：使用本地镜像，本地镜像不存在，则报错；Always：默认值，每次都重新拉取镜像
+        imagePullPolicy: IfNotPresent # 镜像拉取策略。IfNotPresent：优先使用本地镜像；Never：使用本地镜像，本地镜像不存在，则报错；Always：默认值，每次都重新拉取镜像
         # lifecycle: # kubernetes支持postStart和preStop事件。当一个容器启动后，Kubernetes将立即发送postStart事件；在容器被终结之前，Kubernetes将发送一个preStop事件
         name: godfrey-apiserver # 容器名称，与应用名称保持一致
         ports: # 端口设置
-        - containerPort: 8443 # 容器暴露的端口
-          name: secure # 端口名称
-          protocol: TCP # 协议，TCP和UDP
+        - containerPort: 8080 # 容器暴露的端口
+          #name: secure # 端口名称
+          #protocol: TCP # 协议，TCP和UDP
         livenessProbe: # 存活检查，检查容器是否正常，不正常则重启实例
           httpGet: # HTTP请求检查方法
             path: /healthz # 请求路径
@@ -88,7 +88,7 @@ spec:
         terminationMessagePolicy: File # 仅从终止消息文件中检索终止消息
         volumeMounts: # 挂载日志卷
         - mountPath: /etc/godfrey/godfrey-apiserver.yaml # 容器内挂载镜像路径
-          name: godfrey # 引用的卷名称
+          name: godfrey-apiserver # 引用的卷名称
           subPath: godfrey-apiserver.yaml # 指定所引用的卷内的子路径，而不是其根路径。
         - mountPath: /etc/godfrey/cert
           name: godfrey-cert
@@ -98,15 +98,15 @@ spec:
       imagePullSecrets: # 在Pod中设置ImagePullSecrets只有提供自己密钥的Pod才能访问私有仓库
         - name: ccr-registry # 镜像仓库的Secrets需要在集群中手动创建
       securityContext: {} # 指定安全上下文
-      terminationGracePeriodSeconds: 5 # 优雅关闭时间，这个时间内优雅关闭未结束，k8s 强制 kill
+      terminationGracePeriodSeconds: 30 # 优雅关闭时间，这个时间内优雅关闭未结束，k8s 强制 kill
       volumes: # 配置数据卷，类型详见https://kubernetes.io/zh/docs/concepts/storage/volumes
       - configMap: # configMap 类型的数据卷
           defaultMode: 420 #权限设置0~0777，默认0664
           items:
           - key: godfrey-apiserver.yaml
             path: godfrey-apiserver.yaml
-          name: godfrey # configmap名称
-        name: godfrey # 设置卷名称，与volumeMounts名称对应
+          name: godfrey-apiserver # configmap名称
+        name: godfrey-apiserver # 设置卷名称，与volumeMounts名称对应
       - configMap:
           defaultMode: 420
           name: godfrey-cert
